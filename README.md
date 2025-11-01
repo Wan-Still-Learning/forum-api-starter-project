@@ -104,60 +104,36 @@ npm run test
 ## 📚 Dokumentasi API
 
 ### Autentikasi
-- POST /authentications
 
-Deskripsi: Login pengguna.
-
-Body: { "username": "string", "password": "string" }
-
-- PUT /authentications
-
-Deskripsi: Memperbarui access token menggunakan refresh token.
-
-Body: { "refreshToken": "string" }
-
-- DELETE /authentications
-
-Deskripsi: Logout pengguna (menghapus refresh token).
-
-Body: { "refreshToken": "string" }
+| Method | Endpoint | Deskripsi | Body Request | Auth Required |
+|--------|----------|-----------|--------------|---------------|
+| POST | `/authentications` | Login pengguna | `{ "username": "string", "password": "string" }` | ❌ |
+| PUT | `/authentications` | Memperbarui access token menggunakan refresh token | `{ "refreshToken": "string" }` | ❌ |
+| DELETE | `/authentications` | Logout pengguna (menghapus refresh token) | `{ "refreshToken": "string" }` | ❌ |
 
 ### Pengguna
-- POST /users
 
-Deskripsi: Registrasi pengguna baru.
-
-Body: { "username": "string", "password": "string", "fullname": "string" }
+| Method | Endpoint | Deskripsi | Body Request | Auth Required |
+|--------|----------|-----------|--------------|---------------|
+| POST | `/users` | Registrasi pengguna baru | `{ "username": "string", "password": "string", "fullname": "string" }` | ❌ |
 
 ### Threads
-- POST /threads
 
-Deskripsi: Membuat thread baru (Memerlukan Autentikasi).
-
-Body: { "title": "string", "body": "string" }
-
-- GET /threads/{threadId}
-
-Deskripsi: Mendapatkan detail lengkap dari thread, termasuk komentar dan balasan.
+| Method | Endpoint | Deskripsi | Body Request | Auth Required |
+|--------|----------|-----------|--------------|---------------|
+| POST | `/threads` | Membuat thread baru | `{ "title": "string", "body": "string" }` | ✅ |
+| GET | `/threads/{threadId}` | Mendapatkan detail lengkap dari thread, termasuk komentar dan balasan | - | ❌ |
 
 ### Komentar
-- POST /threads/{threadId}/comments
 
-Deskripsi: Menambah komentar baru pada thread (Memerlukan Autentikasi).
-
-Body: { "content": "string" }
-
-- DELETE /threads/{threadId}/comments/{commentId}
-
-Deskripsi: Menghapus komentar (hanya pemilik, soft delete) (Memerlukan Autentikasi).
+| Method | Endpoint | Deskripsi | Body Request | Auth Required |
+|--------|----------|-----------|--------------|---------------|
+| POST | `/threads/{threadId}/comments` | Menambah komentar baru pada thread | `{ "content": "string" }` | ✅ |
+| DELETE | `/threads/{threadId}/comments/{commentId}` | Menghapus komentar (hanya pemilik, soft delete) | - | ✅ |
 
 ### Balasan (Replies)
-- POST /threads/{threadId}/comments/{commentId}/replies
 
-Deskripsi: Menambah balasan baru pada komentar (Memerlukan Autentikasi).
-
-Body: { "content": "string" }
-
-- DELETE /threads/{threadId}/comments/{commentId}/replies/{replyId}
-
-Deskripsi: Menghapus balasan (hanya pemilik, soft delete) (Memerlukan Autentikasi).
+| Method | Endpoint | Deskripsi | Body Request | Auth Required |
+|--------|----------|-----------|--------------|---------------|
+| POST | `/threads/{threadId}/comments/{commentId}/replies` | Menambah balasan baru pada komentar | `{ "content": "string" }` | ✅ |
+| DELETE | `/threads/{threadId}/comments/{commentId}/replies/{replyId}` | Menghapus balasan (hanya pemilik, soft delete) | - | ✅ |
