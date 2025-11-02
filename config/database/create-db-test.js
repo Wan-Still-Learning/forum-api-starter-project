@@ -10,7 +10,7 @@ async function createTestDatabase() {
     port: process.env.PGPORT_TEST,
     user: process.env.PGUSER_TEST,
     password: process.env.PGPASSWORD_TEST,
-    database: 'postgres', // Terhubung ke database default 'postgres'
+    database: 'postgres',
   });
 
   const dbName = process.env.PGDATABASE_TEST;
@@ -22,12 +22,10 @@ async function createTestDatabase() {
 
   try {
     await client.connect();
-    // Menggunakan parameterized query untuk keamanan
     const res = await client.query('SELECT 1 FROM pg_database WHERE datname = $1', [dbName]);
 
     if (res.rowCount === 0) {
       console.log(`Creating test database: ${dbName}`);
-      // Memastikan nama database ditangani dengan aman
       await client.query(`CREATE DATABASE "${dbName}"`);
       console.log(`Database '${dbName}' created successfully.`);
     } else {
