@@ -130,4 +130,53 @@ describe('GetThreadDetailsUseCase', () => {
     expect(reply2.date).toEqual(mockReplies[1].date);
     expect(reply2.username).toEqual(mockReplies[1].username);
   });
+
+  it('should return thread details with an empty comments array if no comments found', async () => {
+    // Arrange
+    const threadId = 'thread-123';
+    const useCasePayload = { threadId };
+
+    const mockThread = {
+      id: 'thread-123',
+      title: 'sebuah thread',
+      body: 'sebuah body thread',
+      date: new Date('2021-08-08T07:19:09.775Z'),
+      username: 'dicoding',
+    };
+
+    /** creating dependency of use case */
+    const mockThreadRepository = new ThreadRepository();
+    const mockCommentRepository = new CommentRepository();
+    const mockReplyRepository = new ReplyRepository();
+
+    /** mocking needed function */
+    mockThreadRepository.verifyAvailableThread = jest.fn()
+      .mockImplementation(() => Promise.resolve());
+    mockThreadRepository.getThreadById = jest.fn()
+      .mockImplementation(() => Promise.resolve(mockThread));
+    mockCommentRepository.getCommentsByThreadId = jest.fn()
+      .mockImplementation(() => Promise.resolve([]));
+    mockReplyRepository.getRepliesByCommentIds = jest.fn()
+      .mockImplementation(() => Promise.resolve([]));
+
+    /** creating use case instance */
+    const getThreadDetailsUseCase = new GetThreadDetailsUseCase({
+      threadRepository: mockThreadRepository,
+      commentRepository: mockCommentRepository,
+      replyRepository: mockReplyRepository,
+    });
+
+    // Action
+    const threadDetails = await getThreadDetailsUseCase.execute(useCasePayload);
+
+    // Assert
+    expect(mockThreadRepository.verifyAvailableThread).toBeCalledWith(threadId);
+    expect(mockThreadRepository.getThreadById).toBeCalledWith(threadId);
+    expect(mockCommentRepository.getCommentsByThreadId).toBeCalledWith(threadId);
+    expect(mockReplyRepository.getRepliesByCommentIds).toBeCalledWith([]);
+    
+    expect(threadDetails).toBeInstanceOf(DetailThread);
+    expect(threadDetails.comments).toHaveLength(0);
+    expect(threadDetails.comments).toEqual([]);
+  });
 });

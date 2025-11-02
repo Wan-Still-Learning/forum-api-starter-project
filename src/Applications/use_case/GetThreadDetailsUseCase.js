@@ -22,10 +22,6 @@ class GetThreadDetailsUseCase {
     
     const detailThread = new DetailThread(thread);
 
-    if (!comments.length) {
-      return detailThread;
-    }
-
     const commentIds = comments.map((comment) => comment.id);
     const replies = await this._replyRepository.getRepliesByCommentIds(commentIds);
 
