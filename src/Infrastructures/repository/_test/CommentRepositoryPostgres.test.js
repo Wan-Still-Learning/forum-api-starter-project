@@ -118,7 +118,9 @@ describe('CommentRepositoryPostgres', () => {
 
       // Action & Assert
       await expect(commentRepositoryPostgres.verifyCommentOwner(commentId, userId))
-        .resolves.not.toThrowError();
+        .resolves.not.toThrow(AuthorizationError);
+      await expect(commentRepositoryPostgres.verifyCommentOwner(commentId, userId))
+        .resolves.not.toThrow(NotFoundError);
     });
   });
 
@@ -145,11 +147,14 @@ describe('CommentRepositoryPostgres', () => {
       const commentDate1 = new Date('2023-01-01T00:00:00.000Z');
       const commentDate2 = new Date('2023-01-02T00:00:00.000Z');
 
+      const content1 = 'Komentar A';
+      const content2 = 'Komentar B';
+
       await CommentsTableTestHelper.addComment({
-        id: 'comment-456', owner: userId, threadId, date: commentDate2,
+        id: 'comment-456', owner: userId, threadId, date: commentDate2, content: content2,
       });
       await CommentsTableTestHelper.addComment({
-        id: 'comment-123', owner: userId, threadId, date: commentDate1,
+        id: 'comment-123', owner: userId, threadId, date: commentDate1, content: content1,
       });
 
       const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {});
@@ -159,10 +164,20 @@ describe('CommentRepositoryPostgres', () => {
 
       // Assert
       expect(comments).toHaveLength(2);
+
+      // Assert comments[0]
       expect(comments[0].id).toEqual('comment-123');
-      expect(comments[1].id).toEqual('comment-456');
       expect(comments[0].username).toEqual('dicoding');
+      expect(comments[0].date).toEqual(commentDate1);
+      expect(comments[0].content).toEqual(content1);
       expect(comments[0].is_delete).toEqual(false);
+
+      // Assert comments[1]
+      expect(comments[1].id).toEqual('comment-456');
+      expect(comments[1].username).toEqual('dicoding');
+      expect(comments[1].date).toEqual(commentDate2);
+      expect(comments[1].content).toEqual(content2);
+      expect(comments[1].is_delete).toEqual(false);
     });
 
     it('should return an empty array if thread has no comments', async () => {
