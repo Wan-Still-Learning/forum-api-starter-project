@@ -25,6 +25,7 @@ jobs:
 
           script: |
             source ~/.bashrc
+            fnm use 22
             cd ~/app
             git pull origin main
             npm install
