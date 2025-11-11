@@ -1,0 +1,35 @@
+# .github/workflows/cd.yml
+
+name: Continuous Deployment (EC2)
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  deploy:
+    name: Deploy to EC2
+    runs-on: ubuntu-latest # Job ini berjalan di runner Ubuntu milik GitHub
+
+    steps:
+      # Step 1: (Opsional tapi disarankan) Checkout kode di runner
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Step 2: Terhubung ke EC2 via SSH dan jalankan perintah deployment
+      - name: Deploy to EC2 Server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          # Kredensial diambil dari GitHub Secrets
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }} # Ini adalah 'ubuntu'
+          key: ${{ secrets.EC2_SSH_KEY }}    # Ini adalah isi file .pem Anda
+          port: 22                         # Port SSH default untuk EC2
+
+          # Perintah yang akan dijalankan di server EC2 Anda
+          script: |
+            cd ~/app
+            git pull origin main
+            npm install
+            npm run migrate up
+            pm2 restart forumapi
