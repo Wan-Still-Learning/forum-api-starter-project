@@ -1,0 +1,7 @@
+{
+  "user": "forumapi_developer",
+  "password": "forumapipass",
+  "host": "localhost",
+  "port": 5432,
+  "database": "forumapi_test"
+}
