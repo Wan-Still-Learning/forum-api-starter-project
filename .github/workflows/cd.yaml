@@ -24,7 +24,11 @@ jobs:
           port: 22                         
 
           script: |
-            source ~/.bashrc
+            FNM_PATH="/home/ubuntu/.local/share/fnm"
+            if [ -d "$FNM_PATH" ]; then
+              export PATH="$FNM_PATH:$PATH"
+              eval "`fnm env`"
+            fi
             fnm use 22
             cd ~/app
             git pull origin main
