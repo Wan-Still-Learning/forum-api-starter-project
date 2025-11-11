@@ -13,15 +13,15 @@ jobs:
 
     services:
       postgres:
-        image: postgres:17-alpine
+        image: postgres:17-alpine 
         env:
-          POSTGRES_DB: forum_api_test
-          POSTGRES_USER: root
-          POSTGRES_PASSWORD: root
+          POSTGRES_DB: forumapi_test
+          POSTGRES_USER: forumapi_developer
+          POSTGRES_PASSWORD: forumapipass
         ports:
           - 5432:5432
         options: >-
-          --health-cmd "pg_isready -U root -d forum_api_test"
+          --health-cmd "pg_isready -U forumapi_developer -d forumapi_test"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
@@ -36,47 +36,35 @@ jobs:
           node-version: '22' 
 
       - name: Install Dependencies
-        run: 
-          npm install
+        run: npm install
 
       - name: Create Test Database
         env:
           PGHOST_TEST: localhost
           PGPORT_TEST: 5432
-          PGUSER_TEST: root
-          PGPASSWORD_TEST: root
-          PGDATABASE_TEST: postgres 
-          
+          PGUSER_TEST: forumapi_developer
+          PGPASSWORD_TEST: forumapipass
+          PGDATABASE_TEST: forumapi_test
           ACCESS_TOKEN_KEY: 'dummykey'
           REFRESH_TOKEN_KEY: 'dummyrefreshkey'
           ACCESS_TOKEN_AGE: 3600
-        run: 
-          npm run db:create:test 
+        run: npm run db:create:test 
 
       - name: Run Migrations
         env:
-          PGHOST_TEST: localhost
-          PGPORT_TEST: 5432
-          PGUSER_TEST: root
-          PGPASSWORD_TEST: root
-          PGDATABASE_TEST: forum_api_test 
-          
           ACCESS_TOKEN_KEY: 'dummykey'
           REFRESH_TOKEN_KEY: 'dummyrefreshkey'
           ACCESS_TOKEN_AGE: 3600
-        run: 
-          npm run migrate:test up
+        run: npm run migrate:test up
 
       - name: Run Tests
         env:
           PGHOST_TEST: localhost
           PGPORT_TEST: 5432
-          PGUSER_TEST: root
-          PGPASSWORD_TEST: root
-          PGDATABASE_TEST: forum_api_test
-          
+          PGUSER_TEST: forumapi_developer
+          PGPASSWORD_TEST: forumapipass
+          PGDATABASE_TEST: forumapi_test
           ACCESS_TOKEN_KEY: 'dummykey'
           REFRESH_TOKEN_KEY: 'dummyrefreshkey'
           ACCESS_TOKEN_AGE: 3600
-        run: 
-          npm run test
+        run: npm run test
