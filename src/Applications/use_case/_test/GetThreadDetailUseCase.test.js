@@ -27,6 +27,7 @@ describe('GetThreadDetailsUseCase', () => {
         date: new Date('2021-08-08T07:22:33.555Z'),
         content: 'sebuah comment',
         is_delete: false,
+        likeCount: 2,
       },
       {
         id: 'comment-456',
@@ -34,6 +35,7 @@ describe('GetThreadDetailsUseCase', () => {
         date: new Date('2021-08-08T07:26:21.338Z'),
         content: 'komentar ini telah dihapus',
         is_delete: true,
+        likeCount: 1,
       },
     ];
 
@@ -103,6 +105,7 @@ describe('GetThreadDetailsUseCase', () => {
     expect(comment1.username).toEqual(mockComments[0].username);
     expect(comment1.date).toEqual(mockComments[0].date);
     expect(comment1.content).toEqual(mockComments[0].content); // Not deleted
+    expect(comment1.likeCount).toEqual(mockComments[0].likeCount);
     expect(comment1.replies).toHaveLength(1);
 
     // Check Reply 1 (for Comment 1)
@@ -120,6 +123,7 @@ describe('GetThreadDetailsUseCase', () => {
     expect(comment2.username).toEqual(mockComments[1].username);
     expect(comment2.date).toEqual(mockComments[1].date);
     expect(comment2.content).toEqual('**komentar telah dihapus**'); // Deleted
+    expect(comment2.likeCount).toEqual(mockComments[1].likeCount);
     expect(comment2.replies).toHaveLength(1);
 
     // Check Reply 2 (for Comment 2) (Deleted)

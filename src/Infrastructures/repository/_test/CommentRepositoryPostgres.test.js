@@ -144,6 +144,7 @@ describe('CommentRepositoryPostgres', () => {
   describe('getCommentsByThreadId function', () => {
     it('should return comments for the thread ordered by date ascending', async () => {
       // Arrange
+      await UsersTableTestHelper.addUser({ id: 'user-456', username: 'johndoe' });
       const commentDate1 = new Date('2023-01-01T00:00:00.000Z');
       const commentDate2 = new Date('2023-01-02T00:00:00.000Z');
 
@@ -159,6 +160,14 @@ describe('CommentRepositoryPostgres', () => {
 
       const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {});
 
+      // Seed likes:
+      // comment-123 liked by user-123 and user-456 (2 likes)
+      // comment-456 liked by user-123 (1 like)
+      await pool.query({
+        text: 'INSERT INTO user_comment_likes(id, comment_id, user_id) VALUES ($1,$2,$3), ($4,$5,$6), ($7,$8,$9)',
+        values: ['like-1', 'comment-123', 'user-123', 'like-2', 'comment-123', 'user-456', 'like-3', 'comment-456', 'user-123'],
+      });
+
       // Action
       const comments = await commentRepositoryPostgres.getCommentsByThreadId(threadId);
 
@@ -171,6 +180,7 @@ describe('CommentRepositoryPostgres', () => {
       expect(comments[0].date).toEqual(commentDate1);
       expect(comments[0].content).toEqual(content1);
       expect(comments[0].is_delete).toEqual(false);
+      expect(comments[0].likeCount).toEqual(2);
 
       // Assert comments[1]
       expect(comments[1].id).toEqual('comment-456');
@@ -178,6 +188,7 @@ describe('CommentRepositoryPostgres', () => {
       expect(comments[1].date).toEqual(commentDate2);
       expect(comments[1].content).toEqual(content2);
       expect(comments[1].is_delete).toEqual(false);
+      expect(comments[1].likeCount).toEqual(1);
     });
 
     it('should return an empty array if thread has no comments', async () => {

@@ -8,7 +8,8 @@ describe('DetailComment entities', () => {
       username: 'dicoding',
       date: new Date(),
       content: 'sebuah komentar',
-      // is_delete is missing
+      is_delete: false,
+      // likeCount is missing
     };
 
     // Action & Assert
@@ -23,6 +24,7 @@ describe('DetailComment entities', () => {
       date: new Date(),
       content: 'sebuah komentar',
       is_delete: false,
+      likeCount: '0',
     };
 
     // Action & Assert
@@ -37,6 +39,7 @@ describe('DetailComment entities', () => {
       date: new Date(),
       content: 'sebuah komentar',
       is_delete: false,
+      likeCount: 0,
     };
 
     // Action
@@ -48,6 +51,7 @@ describe('DetailComment entities', () => {
     expect(detailComment.username).toEqual(payload.username);
     expect(detailComment.date).toEqual(payload.date);
     expect(detailComment.content).toEqual(payload.content);
+    expect(detailComment.likeCount).toEqual(payload.likeCount);
     expect(detailComment.replies).toEqual([]);
   });
 
@@ -59,6 +63,7 @@ describe('DetailComment entities', () => {
       date: new Date(),
       content: 'sebuah komentar',
       is_delete: true,
+      likeCount: 0,
     };
 
     // Action
@@ -70,6 +75,7 @@ describe('DetailComment entities', () => {
     expect(detailComment.username).toEqual(payload.username);
     expect(detailComment.date).toEqual(payload.date);
     expect(detailComment.content).toEqual('**komentar telah dihapus**');
+    expect(detailComment.likeCount).toEqual(payload.likeCount);
     expect(detailComment.replies).toEqual([]);
   });
 });
