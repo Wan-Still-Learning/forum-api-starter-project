@@ -1,5 +1,3 @@
-# .github/workflows/cd.yml
-
 name: Continuous Deployment (EC2)
 
 on:
@@ -9,10 +7,10 @@ on:
 jobs:
   deploy:
     name: Deploy to EC2
-    runs-on: ubuntu-latest # Job ini berjalan di runner Ubuntu milik GitHub
+    runs-on: ubuntu-latest 
 
     steps:
-      # Step 1: (Opsional tapi disarankan) Checkout kode di runner
+      # Step 1: Checkout kode di runner
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -20,14 +18,13 @@ jobs:
       - name: Deploy to EC2 Server
         uses: appleboy/ssh-action@v1.0.3
         with:
-          # Kredensial diambil dari GitHub Secrets
           host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }} # Ini adalah 'ubuntu'
-          key: ${{ secrets.EC2_SSH_KEY }}    # Ini adalah isi file .pem Anda
-          port: 22                         # Port SSH default untuk EC2
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}   
+          port: 22                         
 
-          # Perintah yang akan dijalankan di server EC2 Anda
           script: |
+            source ~/.bashrc
             cd ~/app
             git pull origin main
             npm install

@@ -11,7 +11,6 @@ jobs:
     name: Run Tests
     runs-on: ubuntu-latest
 
-    # Gunakan service container untuk PostgreSQL
     services:
       postgres:
         image: postgres:17-alpine
@@ -21,7 +20,6 @@ jobs:
           POSTGRES_PASSWORD: root
         ports:
           - 5432:5432
-        # Opsi untuk health check
         options: >-
           --health-cmd "pg_isready -U root -d forum_api_test"
           --health-interval 10s
@@ -35,25 +33,23 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22' # Menggunakan LTS versi 22
+          node-version: '22' 
 
       - name: Install Dependencies
         run: npm install
 
       - name: Create Test Database
-        # env ini akan digunakan oleh node-pg-migrate dan skrip db:create:test
         env:
           PGHOST_TEST: localhost
           PGPORT_TEST: 5432
           PGUSER_TEST: root
           PGPASSWORD_TEST: root
-          PGDATABASE_TEST: postgres # Hubungkan ke db default 'postgres' untuk membuat db baru
+          PGDATABASE_TEST: postgres 
           
-          # Variabel dummy untuk ACCESS_TOKEN_KEY, dll.
           ACCESS_TOKEN_KEY: 'dummykey'
           REFRESH_TOKEN_KEY: 'dummyrefreshkey'
           ACCESS_TOKEN_AGE: 3600
-        run: npm run db:create:test # Menjalankan skrip create-db-test.js
+        run: npm run db:create:test 
 
       - name: Run Migrations
         env:
@@ -61,9 +57,8 @@ jobs:
           PGPORT_TEST: 5432
           PGUSER_TEST: root
           PGPASSWORD_TEST: root
-          PGDATABASE_TEST: forum_api_test # Targetkan db yang baru dibuat
+          PGDATABASE_TEST: forum_api_test 
           
-          # Variabel dummy
           ACCESS_TOKEN_KEY: 'dummykey'
           REFRESH_TOKEN_KEY: 'dummyrefreshkey'
           ACCESS_TOKEN_AGE: 3600
@@ -77,7 +72,6 @@ jobs:
           PGPASSWORD_TEST: root
           PGDATABASE_TEST: forum_api_test
           
-          # Variabel dummy
           ACCESS_TOKEN_KEY: 'dummykey'
           REFRESH_TOKEN_KEY: 'dummyrefreshkey'
           ACCESS_TOKEN_AGE: 3600
