@@ -36,7 +36,8 @@ jobs:
           node-version: '22' 
 
       - name: Install Dependencies
-        run: npm install
+        run: 
+          npm install
 
       - name: Create Test Database
         env:
@@ -49,7 +50,8 @@ jobs:
           ACCESS_TOKEN_KEY: 'dummykey'
           REFRESH_TOKEN_KEY: 'dummyrefreshkey'
           ACCESS_TOKEN_AGE: 3600
-        run: npm run db:create:test 
+        run: 
+          npm run db:create:test 
 
       - name: Run Migrations
         env:
@@ -62,7 +64,8 @@ jobs:
           ACCESS_TOKEN_KEY: 'dummykey'
           REFRESH_TOKEN_KEY: 'dummyrefreshkey'
           ACCESS_TOKEN_AGE: 3600
-        run: npm run migrate:test
+        run: 
+          npm run migrate:test up
 
       - name: Run Tests
         env:
@@ -75,4 +78,5 @@ jobs:
           ACCESS_TOKEN_KEY: 'dummykey'
           REFRESH_TOKEN_KEY: 'dummyrefreshkey'
           ACCESS_TOKEN_AGE: 3600
-        run: npm run test
+        run: 
+          npm run test
